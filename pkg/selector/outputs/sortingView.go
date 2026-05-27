@@ -13,18 +13,14 @@
 package outputs
 
 import (
-	"fmt"
 	"io"
-	"strings"
 
-	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
 	"github.com/aws/amazon-ec2-instance-selector/v3/pkg/instancetypes"
-	"github.com/aws/amazon-ec2-instance-selector/v3/pkg/sorter"
 )
 
 const (
@@ -71,190 +67,70 @@ var (
 // implement Item interface for list.
 type item string
 
-func (i item) FilterValue() string { return "" }
-func (i item) Title() string       { return string(i) }
-func (i item) Description() string { return "" }
+func (i item) FilterValue() string { _ = "STUB: not implemented"; return "" }
+func (i item) Title() string       { _ = "STUB: not implemented"; return "" }
+func (i item) Description() string {
+	_ = "STUB: not implemented"
 
-// implement ItemDelegate for list.
+	// implement ItemDelegate for list.
+	return ""
+}
+
 type itemDelegate struct{}
 
-func (d itemDelegate) Height() int                             { return 1 }
-func (d itemDelegate) Spacing() int                            { return 0 }
-func (d itemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd { return nil }
+func (d itemDelegate) Height() int  { _ = "STUB: not implemented"; return 0 }
+func (d itemDelegate) Spacing() int { _ = "STUB: not implemented"; return 0 }
+func (d itemDelegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd {
+	_ = "STUB: not implemented"
+	return *new(tea.Cmd)
+}
 func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list.Item) {
-	i, ok := listItem.(item)
-	if !ok {
-		return
-	}
-
-	str := fmt.Sprintf("%d. %s", index+1, i)
-
-	fn := listItemStyle.Render
-	if index == m.Index() {
-		fn = func(s ...string) string {
-			t := make([]string, 0, len(s)+1)
-			t = append(t, "> ")
-			t = append(t, s...)
-			return selectedItemStyle.Render(t...)
-		}
-	}
-
-	fmt.Fprint(w, fn(str))
+	_ = "STUB: not implemented"
+	return
 }
 
 // initSortingModel initializes and returns a new tableModel based on the given
 // instance type details.
 func initSortingModel(instanceTypes []*instancetypes.Details) *sortingModel {
-	shorthandList := list.New(*createListItems(), itemDelegate{}, initialDimensionVal, initialDimensionVal)
-	shorthandList.Title = "Select sorting filter:"
-	shorthandList.Styles.Title = listTitleStyle
-	shorthandList.SetFilteringEnabled(false)
-	shorthandList.SetShowStatusBar(false)
-	shorthandList.SetShowHelp(false)
-	shorthandList.SetShowPagination(false)
-	shorthandList.KeyMap = createListKeyMap()
-
-	sortTextInput := textinput.New()
-	sortTextInput.Prompt = "JSON Path: "
-	sortTextInput.PromptStyle = lipgloss.NewStyle().Bold(true)
-
-	return &sortingModel{
-		shorthandList: shorthandList,
-		sortTextInput: sortTextInput,
-		instanceTypes: instanceTypes,
-		isDescending:  false,
-	}
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // createListKeyMap creates a KeyMap with the controls for the shorthand list.
-func createListKeyMap() list.KeyMap {
-	return list.KeyMap{
-		CursorDown: key.NewBinding(
-			key.WithKeys("down"),
-		),
-		CursorUp: key.NewBinding(
-			key.WithKeys("up"),
-		),
-	}
-}
+func createListKeyMap() list.KeyMap { _ = "STUB: not implemented"; return *new(list.KeyMap) }
 
 // createListItems creates a list item for shorthand sorting flag.
-func createListItems() *[]list.Item {
-	shorthandFlags := []string{
-		sorter.GPUCountField,
-		sorter.InferenceAcceleratorsField,
-		sorter.VCPUs,
-		sorter.Memory,
-		sorter.GPUMemoryTotal,
-		sorter.NetworkInterfaces,
-		sorter.SpotPrice,
-		sorter.ODPrice,
-		sorter.InstanceStorage,
-		sorter.EBSOptimizedBaselineBandwidth,
-		sorter.EBSOptimizedBaselineThroughput,
-		sorter.EBSOptimizedBaselineIOPS,
-	}
-
-	items := []list.Item{}
-
-	for _, flag := range shorthandFlags {
-		items = append(items, item(flag))
-	}
-
-	return &items
-}
+func createListItems() *[]list.Item { _ = "STUB: not implemented"; return nil }
 
 // resizeSortingView will change the dimensions of the sorting view
 // in order to accommodate the new window dimensions represented by
 // the given tea.WindowSizeMsg.
 func (m sortingModel) resizeView(msg tea.WindowSizeMsg) sortingModel {
-	shorthandList := &m.shorthandList
-	shorthandList.SetWidth(msg.Width)
-	// ensure that text input is right below last option
-	if msg.Height >= len(shorthandList.Items())+sortingTitlePadding+sortingFooterPadding {
-		shorthandList.SetHeight(len(shorthandList.Items()) + sortingTitlePadding)
-	} else if msg.Height-sortingFooterPadding-sortDirectionPadding > 0 {
-		shorthandList.SetHeight(msg.Height - sortingFooterPadding - sortDirectionPadding)
-	} else {
-		shorthandList.SetHeight(1)
-	}
-
-	// ensure cursor of list is still hidden after resize
-	if m.sortTextInput.Focused() {
-		shorthandList.Select(len(m.shorthandList.Items()))
-	}
-
-	m.shorthandList = *shorthandList
-
-	return m
+	_ = "STUB: not implemented"
+	return *new(sortingModel)
 }
+
+// ensure that text input is right below last option
+
+// ensure cursor of list is still hidden after resize
 
 // update updates the state of the sortingModel.
 func (m sortingModel) update(msg tea.Msg) (sortingModel, tea.Cmd) {
-	var cmd tea.Cmd
-	var cmds []tea.Cmd
-
-	switch msg := msg.(type) {
-	case tea.KeyMsg:
-		switch msg.String() {
-		case "down":
-			if m.shorthandList.Index() == len(m.shorthandList.Items())-1 {
-				// focus text input and hide cursor in shorthand list
-				m.shorthandList.Select(len(m.shorthandList.Items()))
-				m.sortTextInput.Focus()
-			}
-		case "up":
-			if m.sortTextInput.Focused() {
-				// go back to list from text input
-				m.shorthandList.Select(len(m.shorthandList.Items()))
-				m.sortTextInput.Blur()
-			}
-		case "tab":
-			m.isDescending = !m.isDescending
-		}
-
-		if m.sortTextInput.Focused() {
-			m.sortTextInput, cmd = m.sortTextInput.Update(msg)
-			cmds = append(cmds, cmd)
-		}
-	}
-
-	if !m.sortTextInput.Focused() {
-		m.shorthandList, cmd = m.shorthandList.Update(msg)
-		cmds = append(cmds, cmd)
-	}
-
-	return m, tea.Batch(cmds...)
+	_ = "STUB: not implemented"
+	return *new(sortingModel), *new(tea.Cmd)
 }
+
+// focus text input and hide cursor in shorthand list
+
+// go back to list from text input
 
 // view returns a string representing the sorting view.
-func (m sortingModel) view() string {
-	outputStr := strings.Builder{}
+func (m sortingModel) view() string { _ = "STUB: not implemented"; return "" }
 
-	// draw sort direction
-	outputStr.WriteString(sortDirectionStyle.Render("Sort Direction:"))
-	outputStr.WriteString(" ")
-	if m.isDescending {
-		outputStr.WriteString(descendingStyle.Render(descendingText))
-	} else {
-		outputStr.WriteString(ascendingStyle.Render(ascendingText))
-	}
-	outputStr.WriteString("\n\n")
+// draw sort direction
 
-	// draw list
-	outputStr.WriteString(m.shorthandList.View())
-	outputStr.WriteString("\n")
+// draw list
 
-	// draw text input
-	outputStr.WriteString(m.sortTextInput.View())
-	outputStr.WriteString("\n")
+// draw text input
 
-	// draw controls
-	if m.sortTextInput.Focused() {
-		outputStr.WriteString(controlsStyle.Render(sortingTextControls))
-	} else {
-		outputStr.WriteString(controlsStyle.Render(sortingListControls))
-	}
-
-	return outputStr.String()
-}
+// draw controls

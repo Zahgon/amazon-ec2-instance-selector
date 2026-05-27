@@ -13,10 +13,6 @@
 package outputs
 
 import (
-	"fmt"
-	"math"
-	"strings"
-
 	ec2types "github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
@@ -57,61 +53,30 @@ var (
 
 // initVerboseModel initializes and returns a new verboseModel based on the given
 // instance type details.
-func initVerboseModel() *verboseModel {
-	viewportModel := viewport.New(initialDimensionVal, initialDimensionVal)
-	viewportModel.MouseWheelEnabled = true
-
-	return &verboseModel{
-		viewport: viewportModel,
-	}
-}
+func initVerboseModel() *verboseModel { _ = "STUB: not implemented"; return nil }
 
 // resizeView will change the dimensions of the verbose viewport in order to accommodate
 // the new window dimensions represented by the given tea.WindowSizeMsg.
 func (m verboseModel) resizeView(msg tea.WindowSizeMsg) verboseModel {
+	_ = "STUB: not implemented"
 	// handle width changes
-	m.viewport.Width = msg.Width
-
-	// handle height changes
-	if outlinePadding >= msg.Height {
-		// height too short to fit viewport
-		m.viewport.Height = 0
-	} else {
-		newHeight := msg.Height - outlinePadding
-		m.viewport.Height = newHeight
-	}
-
-	return m
+	return *new(verboseModel)
 }
+
+// handle height changes
+
+// height too short to fit viewport
 
 // update updates the state of the verboseModel.
 func (m verboseModel) update(msg tea.Msg) (verboseModel, tea.Cmd) {
-	var cmd tea.Cmd
-	m.viewport, cmd = m.viewport.Update(msg)
-	return m, cmd
+	_ = "STUB: not implemented"
+	return *new(verboseModel), *new(tea.Cmd)
 }
 
-func (m verboseModel) view() string {
-	outputStr := strings.Builder{}
+func (m verboseModel) view() string { _ = "STUB: not implemented"; return "" }
 
-	// format header for viewport
-	instanceName := titleStyle.Render(string(m.focusedInstanceName))
-	line := strings.Repeat("─", int(math.Max(0, float64(m.viewport.Width-lipgloss.Width(instanceName)))))
-	outputStr.WriteString(lipgloss.JoinHorizontal(lipgloss.Center, instanceName, line))
-	outputStr.WriteString("\n")
+// format header for viewport
 
-	outputStr.WriteString(m.viewport.View())
-	outputStr.WriteString("\n")
+// format footer for viewport
 
-	// format footer for viewport
-	pagePercentage := infoStyle.Render(fmt.Sprintf("%3.f%%", m.viewport.ScrollPercent()*100))
-	line = strings.Repeat("─", int(math.Max(0, float64(m.viewport.Width-lipgloss.Width(pagePercentage)))))
-	outputStr.WriteString(lipgloss.JoinHorizontal(lipgloss.Center, line, pagePercentage))
-	outputStr.WriteString("\n")
-
-	// controls
-	outputStr.WriteString(controlsStyle.Render(verboseControls))
-	outputStr.WriteString("\n")
-
-	return outputStr.String()
-}
+// controls

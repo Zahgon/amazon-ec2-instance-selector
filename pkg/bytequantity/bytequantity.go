@@ -13,11 +13,7 @@
 package bytequantity
 
 import (
-	"fmt"
 	"math"
-	"regexp"
-	"strconv"
-	"strings"
 )
 
 const (
@@ -40,113 +36,41 @@ type ByteQuantity struct {
 // ParseToByteQuantity parses a string representation of a byte quantity to a ByteQuantity type.
 // A unit can be appended such as 16 GiB. If no unit is appended, GiB is assumed.
 func ParseToByteQuantity(byteQuantityStr string) (ByteQuantity, error) {
-	bqRegexp := regexp.MustCompile(byteQuantityRegex)
-	matches := bqRegexp.FindStringSubmatch(strings.ToLower(byteQuantityStr))
-	if len(matches) < 2 {
-		return ByteQuantity{}, fmt.Errorf("%s is not a valid byte quantity", byteQuantityStr)
-	}
-
-	quantityStr := matches[1]
-	unit := gib
-	if len(matches) > 2 && matches[2] != "" {
-		unit = matches[2]
-	}
-	quantity := uint64(0)
-	switch strings.ToLower(string(unit[0])) {
-	// mib
-	case "m":
-		inputDecSplit := strings.Split(quantityStr, ".")
-		if len(inputDecSplit) == 2 {
-			d, err := strconv.Atoi(inputDecSplit[1])
-			if err != nil {
-				return ByteQuantity{}, err
-			}
-			if d != 0 {
-				return ByteQuantity{}, fmt.Errorf("cannot accept floating point MB value, only integers are accepted")
-			}
-		}
-		// need error here so that this quantity doesn't bind in the local scope
-		var err error
-		quantity, err = strconv.ParseUint(inputDecSplit[0], 10, 64)
-		if err != nil {
-			return ByteQuantity{}, err
-		}
-	// gib
-	case "g":
-		quantityDec, err := strconv.ParseFloat(quantityStr, 64)
-		if err != nil {
-			return ByteQuantity{}, err
-		}
-		if quantityDec > maxGiB {
-			return ByteQuantity{}, fmt.Errorf("error GiB value is too large")
-		}
-		quantity = uint64(quantityDec * gbConvert)
-	// tib
-	case "t":
-		quantityDec, err := strconv.ParseFloat(quantityStr, 64)
-		if err != nil {
-			return ByteQuantity{}, err
-		}
-		if quantityDec > maxTiB {
-			return ByteQuantity{}, fmt.Errorf("error TiB value is too large")
-		}
-		quantity = uint64(quantityDec * tbConvert)
-	default:
-		return ByteQuantity{}, fmt.Errorf("error unit %s is not supported", unit)
-	}
-
-	return ByteQuantity{
-		Quantity: quantity,
-	}, nil
+	_ = "STUB: not implemented"
+	return *new(ByteQuantity), nil
 }
+
+// mib
+
+// need error here so that this quantity doesn't bind in the local scope
+
+// gib
+
+// tib
 
 // FromTiB returns a byte quantity of the passed in tebibytes quantity.
-func FromTiB(tib uint64) ByteQuantity {
-	return ByteQuantity{
-		Quantity: tib * tbConvert,
-	}
-}
+func FromTiB(tib uint64) ByteQuantity { _ = "STUB: not implemented"; return *new(ByteQuantity) }
 
 // FromGiB returns a byte quantity of the passed in gibibytes quantity.
-func FromGiB(gib uint64) ByteQuantity {
-	return ByteQuantity{
-		Quantity: gib * gbConvert,
-	}
-}
+func FromGiB(gib uint64) ByteQuantity { _ = "STUB: not implemented"; return *new(ByteQuantity) }
 
 // FromMiB returns a byte quantity of the passed in mebibytes quantity.
-func FromMiB(mib uint64) ByteQuantity {
-	return ByteQuantity{
-		Quantity: mib,
-	}
-}
+func FromMiB(mib uint64) ByteQuantity { _ = "STUB: not implemented"; return *new(ByteQuantity) }
 
 // StringMiB returns a byte quantity in a mebibytes string representation.
-func (bq ByteQuantity) StringMiB() string {
-	return fmt.Sprintf("%.0f %s", bq.MiB(), mib)
-}
+func (bq ByteQuantity) StringMiB() string { _ = "STUB: not implemented"; return "" }
 
 // StringGiB returns a byte quantity in a gibibytes string representation.
-func (bq ByteQuantity) StringGiB() string {
-	return fmt.Sprintf("%.3f %s", bq.GiB(), gib)
-}
+func (bq ByteQuantity) StringGiB() string { _ = "STUB: not implemented"; return "" }
 
 // StringTiB returns a byte quantity in a tebibytes string representation.
-func (bq ByteQuantity) StringTiB() string {
-	return fmt.Sprintf("%.3f %s", bq.TiB(), tib)
-}
+func (bq ByteQuantity) StringTiB() string { _ = "STUB: not implemented"; return "" }
 
 // MiB returns a byte quantity in mebibytes.
-func (bq ByteQuantity) MiB() float64 {
-	return float64(bq.Quantity)
-}
+func (bq ByteQuantity) MiB() float64 { _ = "STUB: not implemented"; return 0 }
 
 // GiB returns a byte quantity in gibibytes.
-func (bq ByteQuantity) GiB() float64 {
-	return float64(bq.Quantity) * 1 / gbConvert
-}
+func (bq ByteQuantity) GiB() float64 { _ = "STUB: not implemented"; return 0 }
 
 // TiB returns a byte quantity in tebibytes.
-func (bq ByteQuantity) TiB() float64 {
-	return float64(bq.Quantity) * 1 / tbConvert
-}
+func (bq ByteQuantity) TiB() float64 { _ = "STUB: not implemented"; return 0 }

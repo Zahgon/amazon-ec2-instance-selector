@@ -17,10 +17,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/signal"
 	"strings"
-	"sync"
-	"syscall"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -28,7 +25,6 @@ import (
 	ec2types "github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/spf13/cobra"
-	"go.uber.org/multierr"
 
 	commandline "github.com/aws/amazon-ec2-instance-selector/v3/pkg/cli"
 	"github.com/aws/amazon-ec2-instance-selector/v3/pkg/env"
@@ -510,79 +506,18 @@ Full docs can be found at github.com/aws/amazon-` + binName
 }
 
 func hydrateCaches(ctx context.Context, instanceSelector selector.Selector) (errs error) {
-	wg := &sync.WaitGroup{}
-	hydrateTasks := []func(*sync.WaitGroup) error{
-		func(waitGroup *sync.WaitGroup) error {
-			defer waitGroup.Done()
-			if instanceSelector.EC2Pricing.OnDemandCacheCount() == 0 {
-				if err := instanceSelector.EC2Pricing.RefreshOnDemandCache(ctx); err != nil {
-					return multierr.Append(errs, fmt.Errorf("there was a problem refreshing the on-demand pricing cache: %w", err))
-				}
-			}
-			return nil
-		},
-		func(waitGroup *sync.WaitGroup) error {
-			defer waitGroup.Done()
-			if instanceSelector.EC2Pricing.SpotCacheCount() == 0 {
-				if err := instanceSelector.EC2Pricing.RefreshSpotCache(ctx, spotPricingDaysBack); err != nil {
-					return multierr.Append(errs, fmt.Errorf("there was a problem refreshing the spot pricing cache: %w", err))
-				}
-			}
-			return nil
-		},
-		func(waitGroup *sync.WaitGroup) error {
-			defer waitGroup.Done()
-			if instanceSelector.InstanceTypesProvider.CacheCount() == 0 {
-				if _, err := instanceSelector.InstanceTypesProvider.Get(ctx, nil); err != nil {
-					return multierr.Append(errs, fmt.Errorf("there was a problem refreshing the instance types cache: %w", err))
-				}
-			}
-			return nil
-		},
-	}
-	wg.Add(len(hydrateTasks))
-	for _, task := range hydrateTasks {
-		go func() {
-			if err := task(wg); err != nil {
-				log.Printf("Hydrate task error: %v", err)
-			}
-		}()
-	}
-	wg.Wait()
-	return errs
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func getOutputFn(outputFlag *string, currentFn selector.InstanceTypesOutputFn) selector.InstanceTypesOutputFn {
-	outputFn := selector.InstanceTypesOutputFn(currentFn)
-	if outputFlag != nil {
-		switch *outputFlag {
-		case tableWideOutput:
-			return selector.InstanceTypesOutputFn(outputs.TableOutputWide)
-		case tableOutput:
-			return selector.InstanceTypesOutputFn(outputs.TableOutputShort)
-		case oneLine:
-			return selector.InstanceTypesOutputFn(outputs.OneLineOutput)
-		}
-	}
-	return outputFn
+	_ = "STUB: not implemented"
+	return *new(selector.InstanceTypesOutputFn)
 }
 
-func registerShutdown(shutdown func()) {
-	sigs := make(chan os.Signal, 1)
-	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
-	go func() {
-		<-sigs
-		shutdown()
-	}()
-}
+func registerShutdown(shutdown func()) { _ = "STUB: not implemented"; return }
 
 func truncateResults(maxResults *int, instanceTypeInfoSlice []*instancetypes.Details) ([]*instancetypes.Details, int) {
-	if maxResults == nil {
-		return instanceTypeInfoSlice, 0
-	}
-	upperIndex := *maxResults
-	if *maxResults > len(instanceTypeInfoSlice) {
-		upperIndex = len(instanceTypeInfoSlice)
-	}
-	return instanceTypeInfoSlice[0:upperIndex], len(instanceTypeInfoSlice) - upperIndex
+	_ = "STUB: not implemented"
+	return nil, 0
 }

@@ -14,15 +14,12 @@ package ec2pricing
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/aws/aws-sdk-go-v2/service/ec2"
 	ec2types "github.com/aws/aws-sdk-go-v2/service/ec2/types"
 	"github.com/aws/aws-sdk-go-v2/service/pricing"
-	"go.uber.org/multierr"
 )
 
 const (
@@ -55,85 +52,50 @@ type EC2PricingIface interface {
 // TODO: In the future we may want to allow the client to select which endpoint is used through some mechanism
 //
 //	but that would likely happen through overriding this entire function as its signature is fixed
-func modifyPricingRegion(opt *pricing.Options) {
-	opt.Region = "us-east-1"
-}
+func modifyPricingRegion(opt *pricing.Options) { _ = "STUB: not implemented"; return }
 
 // New creates an instance of instance-selector EC2Pricing.
 func New(ctx context.Context, cfg aws.Config) (*EC2Pricing, error) {
-	return NewWithCache(ctx, cfg, 0, "")
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func NewWithCache(ctx context.Context, cfg aws.Config, ttl time.Duration, cacheDir string) (*EC2Pricing, error) {
-	pricingClient := pricing.NewFromConfig(cfg, modifyPricingRegion)
-	ec2Client := ec2.NewFromConfig(cfg)
-	odPricingCache, err := LoadODCacheOrNew(ctx, pricingClient, cfg.Region, ttl, cacheDir)
-	if err != nil {
-		return nil, fmt.Errorf("unable to initialize the OD pricing cache: %w", err)
-	}
-	spotPricingCache, err := LoadSpotCacheOrNew(ctx, ec2Client, cfg.Region, ttl, cacheDir, DefaultSpotDaysBack)
-	if err != nil {
-		return nil, fmt.Errorf("unable to initialize the spot pricing cache: %w", err)
-	}
-	return &EC2Pricing{
-		ODPricing:   odPricingCache,
-		SpotPricing: spotPricingCache,
-	}, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (p *EC2Pricing) SetLogger(logger *log.Logger) {
-	p.logger = logger
-	p.ODPricing.SetLogger(logger)
-	p.SpotPricing.SetLogger(logger)
-}
+func (p *EC2Pricing) SetLogger(logger *log.Logger) { _ = "STUB: not implemented"; return }
 
 // OnDemandCacheCount returns the number of items in the OD cache.
-func (p *EC2Pricing) OnDemandCacheCount() int {
-	return p.ODPricing.Count()
-}
+func (p *EC2Pricing) OnDemandCacheCount() int { _ = "STUB: not implemented"; return 0 }
 
 // SpotCacheCount returns the number of items in the spot cache.
-func (p *EC2Pricing) SpotCacheCount() int {
-	return p.SpotPricing.Count()
-}
+func (p *EC2Pricing) SpotCacheCount() int { _ = "STUB: not implemented"; return 0 }
 
 // GetSpotInstanceTypeNDayAvgCost retrieves the spot price history for a given AZ from the past N days and averages the price
 // Passing an empty list for availabilityZones will retrieve avg cost for all AZs in the current AWSSession's region.
 func (p *EC2Pricing) GetSpotInstanceTypeNDayAvgCost(ctx context.Context, instanceType ec2types.InstanceType, availabilityZones []string, days int) (float64, error) {
-	if len(availabilityZones) == 0 {
-		return p.SpotPricing.Get(ctx, instanceType, "", days)
-	}
-	costs := []float64{}
-	var errs error
-	for _, zone := range availabilityZones {
-		cost, err := p.SpotPricing.Get(ctx, instanceType, zone, days)
-		if err != nil {
-			errs = multierr.Append(errs, err)
-		}
-		costs = append(costs, cost)
-	}
-
-	if len(multierr.Errors(errs)) == len(availabilityZones) {
-		return -1, errs
-	}
-	return costs[0], nil
+	_ = "STUB: not implemented"
+	return 0, nil
 }
 
 // GetOnDemandInstanceTypeCost retrieves the on-demand hourly cost for the specified instance type.
 func (p *EC2Pricing) GetOnDemandInstanceTypeCost(ctx context.Context, instanceType ec2types.InstanceType) (float64, error) {
-	return p.ODPricing.Get(ctx, instanceType)
+	_ = "STUB: not implemented"
+	return 0, nil
 }
 
 // RefreshOnDemandCache makes a bulk request to the pricing api to retrieve all instance type pricing and stores them in a local cache.
 func (p *EC2Pricing) RefreshOnDemandCache(ctx context.Context) error {
-	return p.ODPricing.Refresh(ctx)
+	_ = "STUB: not implemented"
+	return nil
 }
 
 // RefreshSpotCache makes a bulk request to the ec2 api to retrieve all spot instance type pricing and stores them in a local cache.
 func (p *EC2Pricing) RefreshSpotCache(ctx context.Context, days int) error {
-	return p.SpotPricing.Refresh(ctx, days)
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (p *EC2Pricing) Save() error {
-	return multierr.Append(p.ODPricing.Save(), p.SpotPricing.Save())
-}
+func (p *EC2Pricing) Save() error { _ = "STUB: not implemented"; return nil }

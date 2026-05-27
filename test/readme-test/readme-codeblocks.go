@@ -72,29 +72,13 @@ func main() {
 }
 
 func compareBlockWithFile(codeBlock string, codePath string) bool {
-	fileContents, err := os.ReadFile(codePath)
-	if err != nil {
-		log.Fatalf("Unable to read file contents at %s", codePath)
-	}
-	fileContentStr := removeWhitespace(string(fileContents))
-	codeBlock = removeWhitespace(string(codeBlock))
-	return fileContentStr == codeBlock
+	_ = "STUB: not implemented"
+	return false
 }
 
 func removeFromSlice(original []string, removals []string) []string {
-	newSlice := []string{}
-	for i, element := range original {
-		for _, removal := range removals {
-			if removal == element {
-				newSlice = append(original[:i], original[i+1:]...)
-			}
-		}
-	}
-	return newSlice
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func removeWhitespace(original string) string {
-	removed := strings.ReplaceAll(original, " ", "")
-	removed = strings.ReplaceAll(removed, "\t", "")
-	return strings.ReplaceAll(removed, "\n", "")
-}
+func removeWhitespace(original string) string { _ = "STUB: not implemented"; return "" }

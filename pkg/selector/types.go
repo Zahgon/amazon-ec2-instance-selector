@@ -13,7 +13,6 @@
 package selector
 
 import (
-	"encoding/json"
 	"log"
 	"regexp"
 
@@ -36,10 +35,12 @@ type InstanceTypesOutputFn func([]*instancetypes.Details) []string
 // Output implements InstanceTypesOutput interface on InstanceTypesOutputFn
 // This allows any InstanceTypesOutputFn to be passed into funcs accepting InstanceTypesOutput interface.
 func (fn InstanceTypesOutputFn) Output(instanceTypes []*instancetypes.Details) []string {
-	return fn(instanceTypes)
+	_ = "STUB: not implemented"
+	return nil
+
+	// Selector is used to filter instance type resource specs.
 }
 
-// Selector is used to filter instance type resource specs.
 type Selector struct {
 	EC2                   awsapi.SelectorInterface
 	EC2Pricing            ec2pricing.EC2PricingIface
@@ -89,26 +90,12 @@ type filterPair struct {
 	instanceSpec interface{}
 }
 
-func getRegexpString(r *regexp.Regexp) *string {
-	if r == nil {
-		return nil
-	}
-	rStr := r.String()
-	return &rStr
-}
+func getRegexpString(r *regexp.Regexp) *string { _ = "STUB: not implemented"; return nil }
 
 // MarshalIndent is used to return a pretty-print json representation of a Filters struct.
 func (f *Filters) MarshalIndent(prefix, indent string) ([]byte, error) {
-	type Alias Filters
-	return json.MarshalIndent(&struct {
-		AllowList *string
-		DenyList  *string
-		*Alias
-	}{
-		AllowList: getRegexpString(f.AllowList),
-		DenyList:  getRegexpString(f.DenyList),
-		Alias:     (*Alias)(f),
-	}, prefix, indent)
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 // Filters is used to group instance type resource attributes for filtering.
@@ -294,13 +281,7 @@ const (
 // Values returns all known values for CPUManufacturer. Note that this can be
 // expanded in the future, and so it is only as up to date as the client. The
 // ordering of this slice is not guaranteed to be stable across updates.
-func (CPUManufacturer) Values() []CPUManufacturer {
-	return []CPUManufacturer{
-		CPUManufacturerAWS,
-		CPUManufacturerAMD,
-		CPUManufacturerIntel,
-	}
-}
+func (CPUManufacturer) Values() []CPUManufacturer { _ = "STUB: not implemented"; return nil }
 
 // ArchitectureTypeAMD64 is a legacy type we support for b/c that isn't in the API.
 const (
